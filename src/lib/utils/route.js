@@ -25,4 +25,6 @@ async function loadRoutes (app) {
   await app.use(router.routes());
 }
 
-module.exports = { loadRoutes };
+module.exports = {
+  loadRoutes,
+};

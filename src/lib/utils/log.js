@@ -43,5 +43,5 @@ function getLogger (category) {
 }
 
 module.exports = {
-  getLogger
+  getLogger,
 };

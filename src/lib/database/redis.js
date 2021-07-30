@@ -10,10 +10,10 @@ async function getRedisClient () {
     try {
       client = new Redis({
         host: redisConfig.host,
-        port: redisConfig.port,
-        password: redisConfig.password,
         keepAlive: redisConfig.keepalive,
-        lazyConnect: true
+        lazyConnect: true,
+        password: redisConfig.password,
+        port: redisConfig.port,
       });
       await client.connect();
       getLogger('redis').info('Redis Connected');
@@ -24,4 +24,6 @@ async function getRedisClient () {
   return client;
 }
 
-module.exports = { getRedisClient };
+module.exports = {
+  getRedisClient,
+};

@@ -15,5 +15,5 @@ async function updateModelMeta (modelId, newModelMeta) {
 module.exports = {
   getModelMetaById,
   addModelMeta,
-  updateModelMeta
+  updateModelMeta,
 };

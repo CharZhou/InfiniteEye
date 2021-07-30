@@ -5,7 +5,7 @@ describe('Log4j模块', () => {
   it('log4j配置', () => {
     log4j.configure({
       appenders: { stdout: { type: 'stdout' } },
-      categories: { default: { appenders: ['stdout'], level: 'info' } }
+      categories: { default: { appenders: ['stdout'], level: 'info' } },
     });
   });
 

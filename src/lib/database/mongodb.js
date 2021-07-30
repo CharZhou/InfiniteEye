@@ -13,12 +13,12 @@ mongodb.set('useCreateIndex', true);
 async function getMongooseClient () {
   if (mongooseClient === null) {
     mongooseClient = await mongodb.createConnection(mongoDbConfig.uri, {
-      useNewUrlParser: true,
-      poolSize: mongoDbConfig.pool_size,
-      loggerLevel: mongoDbConfig.loggerLevel,
-      useUnifiedTopology: true,
+      dbName: mongoDbConfig.database_name,
       keepAlive: mongoDbConfig.keep_alive,
-      dbName: mongoDbConfig.database_name
+      loggerLevel: mongoDbConfig.loggerLevel,
+      poolSize: mongoDbConfig.pool_size,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
     getLogger('mongodb').info('Mongoose Connected');
   }
@@ -26,5 +26,5 @@ async function getMongooseClient () {
 }
 
 module.exports = {
-  getMongooseClient
+  getMongooseClient,
 };

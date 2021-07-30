@@ -35,6 +35,6 @@ async function makeQuery (queryStatement) {
 }
 
 module.exports = {
+  getMySqlConnection,
   makeQuery,
-  getMySqlConnection
 };

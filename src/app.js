@@ -14,7 +14,7 @@ app.use(koaLog4j.koaLogger(log4j.getLogger('http'), { level: 'auto' }));
 app.use(cors());
 app.use(responseTimeMiddleware());
 app.use(body({
-  multipart: true
+  multipart: true,
 }));
 app.use(exceptionMiddleware());
 

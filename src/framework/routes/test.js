@@ -12,5 +12,5 @@ router.get('/error', async (ctx) => {
 
 module.exports = {
   basePath: '/test',
-  router
+  router,
 };

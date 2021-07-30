@@ -4,5 +4,5 @@ const router = new KoaRouter();
 
 module.exports = {
   basePath: '/data',
-  router
+  router,
 };

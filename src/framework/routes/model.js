@@ -18,5 +18,5 @@ router.del('/:modelId/', async (ctx) => {
 
 module.exports = {
   basePath: '/model',
-  router
+  router,
 };
