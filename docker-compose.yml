@@ -1,22 +1,22 @@
 version: "3.9"
 
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: infiniteeye
-    depends_on:
-      - redis
-      - mysql
-      - mongodb
-    links:
-      - redis
-      - mongodb
-      - mysql
-    ports:
-      - "40078:40078"
-      - "40079:40079"
+#  backend:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    image: infiniteeye
+#    depends_on:
+#      - redis
+#      - mysql
+#      - mongodb
+#    links:
+#      - redis
+#      - mongodb
+#      - mysql
+#    ports:
+#      - "40078:40078"
+#      - "40079:40079"
 
   redis:
     image: redis

@@ -25,8 +25,6 @@ async function getMongooseClient () {
   return mongooseClient;
 }
 
-getMongooseClient();
-
 module.exports = {
   getMongooseClient
 };

@@ -1,7 +1,4 @@
 const ModelMeta = require('../entities/modelmeta');
-const mysql = require('../database/mysql');
-const redis = require('../database/redis');
-const mongoose = require('../database/mongodb');
 
 async function getModelMetaById (modelId) {
 
@@ -11,7 +8,12 @@ async function addModelMeta (modelMeta) {
 
 }
 
+async function updateModelMeta (modelId, newModelMeta) {
+
+}
+
 module.exports = {
   getModelMetaById,
-  addModelMeta
+  addModelMeta,
+  updateModelMeta
 };

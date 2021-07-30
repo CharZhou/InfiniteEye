@@ -3,14 +3,14 @@ module.exports = {
     categories: { default: { level: 'trace' } }
   },
   mongodb: {
-    uri: 'mongodb://root:root@mongodb:27017/admin',
+    uri: 'mongodb://root:root@localhost:27017/admin',
     debug: true,
     loggerLevel: 'info'
   },
   redis: {
-    host: 'redis'
+    host: 'localhost'
   },
   mysql: {
-    host: 'mysql'
+    host: 'localhost'
   }
 };

@@ -22,6 +22,6 @@ routeUtil.loadRoutes(app).then(() => {
   getLogger('route').info('Route Load Finished');
 });
 
-getLogger('app').info('App Load Finished');
+// getLogger('app').info('App Load Finished');
 
 module.exports = app;

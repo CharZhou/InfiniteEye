@@ -24,6 +24,4 @@ async function getRedisClient () {
   return client;
 }
 
-getRedisClient();
-
 module.exports = { getRedisClient };

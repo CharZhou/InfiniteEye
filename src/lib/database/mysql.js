@@ -34,8 +34,7 @@ async function makeQuery (queryStatement) {
   });
 }
 
-getMySqlConnection();
-
 module.exports = {
-  makeQuery
+  makeQuery,
+  getMySqlConnection
 };
