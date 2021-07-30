@@ -11,28 +11,32 @@
   "scripts": {
     "main": "node dist/main.js",
     "dev": "cross-env NODE_ENV=development npm run main",
-    "prod": "cross-env NODE_ENV=production npm run main",
-    "pre-prod": "cross-env NODE_ENV=preproduction npm run main"
+    "production": "cross-env NODE_ENV=production npm run main",
+    "preproduction": "cross-env NODE_ENV=preproduction npm run main"
   },
   "dependencies": {
     "@koa/cors": "^3.1.0",
     "config": "^3.3.6",
     "cross-env": "^7.0.3",
-    "dotenv": "^10.0.0",
+    "ioredis": "^4.27.6",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
     "koa-log4": "^2.3.2",
     "koa-router": "^10.0.0",
     "log4js": "^6.3.0",
-    "mocha": "^9.0.3"
+    "mongoose": "^5.13.4",
+    "mysql": "^2.18.1"
   },
   "devDependencies": {
+    "chai": "^4.3.4",
     "eslint": "^7.31.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-google": "^0.14.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.0"
+    "eslint-plugin-promise": "^5.1.0",
+    "mocha": "^9.0.3",
+    "supertest": "^6.1.4"
   }
 }

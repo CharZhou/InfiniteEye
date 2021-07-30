@@ -22,7 +22,7 @@ async function loadRoutes (app) {
   }
 
   await listDir(path.join(__dirname, '../../framework/routes'));
-  app.use(router.routes());
+  await app.use(router.routes());
 }
 
 module.exports = { loadRoutes };

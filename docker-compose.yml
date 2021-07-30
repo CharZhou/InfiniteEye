@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: infiniteeye
+    depends_on:
+      - redis
+      - mysql
+      - mongodb
+    links:
+      - redis
+      - mongodb
+      - mysql
+    ports:
+      - "40078:40078"
+      - "40079:40079"
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  mysql:
+    image: mysql:5.6
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: infinite_eye
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - mysql-volume:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  mongodb:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - mongodb-volume:/data/db
+    ports:
+      - "27017:27017"
+
+volumes:
+  mysql-volume: {}
+  mongodb-volume: {}

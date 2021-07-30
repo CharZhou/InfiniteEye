@@ -3,10 +3,10 @@ const koaLog4j = require('koa-log4');
 const log4j = require('log4js');
 const cors = require('@koa/cors');
 const body = require('koa-body');
-const routeUtil = require('./lib/utils/routeutil');
+const routeUtil = require('./lib/utils/route');
 const exceptionMiddleware = require('./framework/middlewares/exception');
 const responseTimeMiddleware = require('./framework/middlewares/responsetime');
-const { getLogger } = require('./lib/utils/logutil');
+const { getLogger } = require('./lib/utils/log');
 
 const app = new Koa();
 
