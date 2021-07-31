@@ -13,7 +13,7 @@ async function updateModelMeta (modelId, newModelMeta) {
 }
 
 module.exports = {
-  getModelMetaById,
   addModelMeta,
+  getModelMetaById,
   updateModelMeta,
 };
