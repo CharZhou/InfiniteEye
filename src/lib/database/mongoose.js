@@ -7,6 +7,7 @@ const dataSourceMongoDbConfig = config.get('dataSource');
 const enableMongooseDebug = config.get('enableMongooseDebug');
 
 let mongooseClient = null;
+let dataSourceDefaultMongooseClient = null;
 
 const dataSourceMongooseClients = {};
 
@@ -47,9 +48,26 @@ async function getDataSourceMongooseClient (databaseName) {
   return dataSourceMongooseClients[databaseName];
 }
 
+async function getDataSourceDefaultMongooseClient () {
+  if (!dataSourceDefaultMongooseClient) {
+    dataSourceDefaultMongooseClient = await mongoose.createConnection(
+      dataSourceMongoDbConfig.uri,
+      {
+        keepAlive: dataSourceMongoDbConfig.keep_alive,
+        loggerLevel: dataSourceMongoDbConfig.loggerLevel,
+        poolSize: dataSourceMongoDbConfig.pool_size,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+    getLogger('mongoose').info('Default DataSource Client Connected');
+  }
+  return dataSourceDefaultMongooseClient;
+}
+
 module.exports = {
   MongooseSchema: mongoose.Schema,
   SchemaType: mongoose.Schema.Types,
   getMongooseClient,
   getDataSourceMongooseClient,
+  getDataSourceDefaultMongooseClient,
 };

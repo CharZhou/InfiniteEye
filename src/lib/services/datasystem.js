@@ -1,6 +1,6 @@
 const { getMongooseModel } = require('../utils/mongoose');
 const randomPwdJs = require('randompasswordjs');
-const { getMongooseClient } = require('../database/mongoose');
+const { getDataSourceDefaultMongooseClient } = require('../database/mongoose');
 
 async function getDataSystemById (systemId) {
   const DataSystem = await getMongooseModel('DataSystem');
@@ -8,7 +8,7 @@ async function getDataSystemById (systemId) {
 }
 
 async function createUser (username, password, roles) {
-  const mongooseClient = await getMongooseClient();
+  const mongooseClient = await getDataSourceDefaultMongooseClient();
   const mongodbClient = mongooseClient.getClient();
   const adminDb = mongodbClient.db().admin();
   await adminDb.addUser(username,
