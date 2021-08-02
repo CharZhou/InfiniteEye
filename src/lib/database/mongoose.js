@@ -25,16 +25,8 @@ async function getMongooseClient () {
   return mongooseClient;
 }
 
-function StringToObjectId (id) {
-  return mongoose.Types.ObjectId(id);
-}
-
 module.exports = {
-  Connection: mongoose.Connection,
-  Error: mongoose.Error,
-  Model: mongoose.Model,
-  MongooseDocument: mongoose.Document,
   MongooseSchema: mongoose.Schema,
-  StringToObjectId,
+  SchemaType: mongoose.Schema.Types,
   getMongooseClient,
 };

@@ -1,5 +1,3 @@
-const ModelMeta = require('../entities/modelmeta');
-
 async function getModelMetaById (modelId) {
 
 }
