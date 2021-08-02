@@ -28,7 +28,7 @@ async function generateAllMongooseModel () {
     }
   }
 
-  await listDir(path.join(__dirname, '../schemas/'));
+  await listDir(path.join(__dirname, '../premodels/'));
 }
 
 function StringToObjectId (id) {
