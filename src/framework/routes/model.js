@@ -1,21 +1,29 @@
 const KoaRouter = require('koa-router');
-const modelSvc = require('../../lib/services/model');
+const fatDataSvc = require('../../lib/services/fatdata');
 
 const router = new KoaRouter();
 
-router.get('/:modelId/', async (ctx) => {
-  ctx.body = await modelSvc.getModelMetaById(ctx.request.params.modelId);
+router.get('/:modelId', async (ctx) => {
+  ctx.body = await fatDataSvc.getDataModelById(ctx.request.params.modelId);
 });
 
-router.put('/:modelId/', async (ctx) => {
-  await modelSvc.addModelMeta(ctx.request.body);
+router.put('/:modelId', async (ctx) => {
+  await fatDataSvc.addDataModel(ctx.request.body);
 });
 
-router.del('/:modelId/', async (ctx) => {
-  ctx.body = 'A';
+router.patch('/:modelId', async (ctx) => {
+  await fatDataSvc.updateDataModel(ctx.request.body);
+});
+
+router.post('/:modelId', async (ctx) => {
+  await fatDataSvc.queryDataModel(ctx.request.body);
+});
+
+router.del('/:modelId', async (ctx) => {
+  await fatDataSvc.delDataModel(ctx.request.body);
 });
 
 module.exports = {
-  basePath: '/model',
+  basePath: '/fatdata',
   router,
 };

@@ -6,11 +6,15 @@ const { getLogger } = require('./log');
 
 async function generateAllMongooseModel () {
   const mongooseClient = await getMongooseClient();
+  const modelNameList = Object.keys(mongooseClient.models);
   async function loadSchema (schemaJsPath, schemaFileName) {
     const schemaName = schemaFileName.substring(0, schemaFileName.lastIndexOf('.'));
+    if (modelNameList.indexOf(schemaName) !== -1) {
+      return;
+    }
     const schema = require(schemaJsPath + '/' + schemaFileName);
-    await mongooseClient.model(schemaName, schema);
-    getLogger('mongoose').debug('register mongoose model', schemaName);
+    await mongooseClient.model(schemaName, schema.schema);
+    getLogger('mongoose').debug('register model', schemaName);
   }
 
   async function listDir (baseDir) {

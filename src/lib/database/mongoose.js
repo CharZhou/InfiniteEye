@@ -20,7 +20,7 @@ async function getMongooseClient () {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    getLogger('mongodb').info('Mongoose Connected');
+    getLogger('mongoose').info('MongoDb Connected');
   }
   return mongooseClient;
 }

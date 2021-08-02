@@ -10,16 +10,17 @@ const { getLogger } = require('./lib/utils/log');
 
 const app = new Koa();
 
-app.use(koaLog4j.koaLogger(log4j.getLogger('http'), { level: 'auto' }));
-app.use(cors());
-app.use(responseTimeMiddleware());
-app.use(body({
-  multipart: true,
-}));
-app.use(exceptionMiddleware());
+async function loadApp () {
+  app.use(koaLog4j.koaLogger(log4j.getLogger('http'), { level: 'auto' }));
+  app.use(cors());
+  app.use(responseTimeMiddleware());
+  app.use(body({
+    multipart: true,
+  }));
+  app.use(exceptionMiddleware());
 
-routeUtil.loadRoutes(app).then(() => {
+  await routeUtil.loadRoutes(app);
   getLogger('route').info('Route Load Finished');
-});
+}
 
-module.exports = app;
+module.exports = { app, loadApp };

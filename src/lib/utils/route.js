@@ -2,11 +2,13 @@ const fs = require('fs');
 const path = require('path');
 
 const Router = require('koa-router');
+const { getLogger } = require('./log');
 
 async function loadRoutes (app) {
   const router = new Router();
   async function loadRoute (routeFile) {
     const route = require(routeFile.substring(0, routeFile.lastIndexOf('.')));
+    getLogger('route').debug('load route', route.basePath);
     router.use(route.basePath, route.router.routes());
   }
 
