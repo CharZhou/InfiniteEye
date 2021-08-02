@@ -1,4 +1,4 @@
-const { getMongooseModel } = require('../utils/mongoose');
+const { getMongooseModel, StringToObjectId } = require('../utils/mongoose');
 
 async function getDataModelById (modelId) {
   const FatDataModel = await getMongooseModel('FatDataModel');
@@ -15,22 +15,25 @@ async function addModelProperty (propertyName, propertyKey) {
   return newDataProperty;
 }
 
-async function addDataModel (modelName, collectionName, modelProperties) {
+async function addDataModel (modelName, collectionName, belongSystemId, modelProperties) {
   const FatDataModel = await getMongooseModel('FatDataModel');
   const modelPropertyArray = await Promise.all(modelProperties.map(async modelProperty => {
     return addModelProperty(modelProperty.name, modelProperty.key);
   }));
   const newFatDataEntity = new FatDataModel({
-    modelName: modelName,
-    modelCollectionName: collectionName,
-    modelProperty: modelPropertyArray,
+    model_name: modelName,
+    collection_name: collectionName,
+    belong_system: StringToObjectId(belongSystemId),
+    properties: modelPropertyArray,
   });
   await newFatDataEntity.save();
-  return newFatDataEntity.id;
+  return newFatDataEntity;
 }
 
 async function delDataModel (modelId) {
-
+  const FatDataModel = await getMongooseModel('FatDataModel');
+  const newFatDataEntity = await FatDataModel.findById(modelId);
+  await newFatDataEntity.del();
 }
 
 async function updateDataModel (modelId, updateCondition) {

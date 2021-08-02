@@ -7,8 +7,13 @@ router.get('/:modelId', async (ctx) => {
   ctx.body = await fatDataSvc.getDataModelById(ctx.request.params.modelId);
 });
 
-router.put('/:modelId', async (ctx) => {
-  await fatDataSvc.addDataModel(ctx.request.body);
+router.put('/', async (ctx) => {
+  ctx.body = await fatDataSvc.addDataModel(
+    ctx.request.body.name,
+    ctx.request.body.collectionName,
+    ctx.request.body.systemId,
+    ctx.request.body.properties,
+  );
 });
 
 router.patch('/:modelId', async (ctx) => {

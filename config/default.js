@@ -1,6 +1,8 @@
 module.exports = {
-  enablePrintTraceOnError: true,
+  enablePrintTraceOnError: false,
   enableXRTime: true,
+  trustProxy: true,
+  enableMongooseDebug: false,
   log4j: {
     appenders: {
       FILE_ALL: {
@@ -36,8 +38,6 @@ module.exports = {
   },
   mongodb: {
     database_name: 'infinite_eye',
-    debug: false,
-    default_expire: 600,
     keep_alive: 60,
     loggerLevel: 'error',
     pool_size: 10,
@@ -56,5 +56,11 @@ module.exports = {
     keepalive: 100,
     password: '',
     port: 6379,
+  },
+  dataSource: {
+    keep_alive: 60,
+    loggerLevel: 'error',
+    pool_size: 10,
+    uri: '',
   },
 };
