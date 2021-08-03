@@ -1,0 +1,12 @@
+### 查询胖数据模型
+GET http://localhost:40078/thindata/6108f5be7567f960388a2321
+
+### 查询胖数据模型的数据
+POST http://localhost:40078/thindata/6108f5be7567f960388a2321
+Content-Type: application/json
+
+{
+  "queryCondition": {
+    "id": "605f2a8eeaa87b6fb80f8bb0"
+  }
+}

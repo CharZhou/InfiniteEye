@@ -17,19 +17,22 @@ describe('胖数据业务测试', () => {
       systemId, [{
         name: '订单状态',
         key: 'status',
+        type: 'String',
       }, {
         name: '下单时间',
         key: 'create_time',
+        type: 'Data',
       }, {
         name: '下单用户ID',
         key: 'create_id',
+        type: 'ObjectId',
       }]);
 
     newDataModelId = dataModel.id;
   });
 
   it('查询胖数据业务模型', async () => {
-    await fatDataSvc.getDataModelById(newDataModelId);
+    await fatDataSvc.getFatDataModelById(newDataModelId);
   });
 
   it('查询胖数据业务数据', async () => {

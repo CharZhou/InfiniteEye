@@ -2,7 +2,7 @@ const { getMongooseModel, StringToObjectId } = require('../utils/mongoose');
 const { getDataSourceMongooseClient, SchemaType } = require('../database/mongoose');
 const { getDataSystemById } = require('./datasystem');
 
-async function getDataModelById (modelId) {
+async function getFatDataModelById (modelId) {
   const FatDataModel = await getMongooseModel('FatDataModel');
   return FatDataModel.findById(modelId).populate('properties');
 }
@@ -35,12 +35,12 @@ async function addDataModel (modelName, collectionName, belongSystemId, modelPro
 
 async function delDataModel (modelId) {
   const FatDataModel = await getMongooseModel('FatDataModel');
-  const newFatDataEntity = await FatDataModel.findById(modelId);
-  await newFatDataEntity.del();
+  await FatDataModel.findByIdAndDelete(modelId);
+  return 1;
 }
 
 async function updateDataModel (modelId, updateCondition) {
-
+  return 1;
 }
 
 async function createFatDataModel (mongooseClient, fatDataEntity) {
@@ -48,6 +48,7 @@ async function createFatDataModel (mongooseClient, fatDataEntity) {
     String: SchemaType.String,
     Number: SchemaType.Number,
     ObjectId: SchemaType.ObjectId,
+    Date: SchemaType.Date,
   };
   if (!(fatDataEntity.model_name in Object.keys(mongooseClient.models))) {
     const schema = {};
@@ -59,7 +60,7 @@ async function createFatDataModel (mongooseClient, fatDataEntity) {
 }
 
 async function queryDataModel (modelId, queryCondition, queryOption) {
-  const fatDataEntity = await getDataModelById(modelId);
+  const fatDataEntity = await getFatDataModelById(modelId);
   const dataSystemEntity = await getDataSystemById(fatDataEntity.belong_system);
   const mongooseClient = await getDataSourceMongooseClient(dataSystemEntity.database_name);
   await createFatDataModel(mongooseClient, fatDataEntity);
@@ -70,7 +71,7 @@ async function queryDataModel (modelId, queryCondition, queryOption) {
 
 module.exports = {
   addDataModel,
-  getDataModelById,
+  getFatDataModelById,
   updateDataModel,
   delDataModel,
   queryDataModel,

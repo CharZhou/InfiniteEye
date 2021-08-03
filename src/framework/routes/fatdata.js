@@ -4,7 +4,7 @@ const fatDataSvc = require('../../lib/services/fatdata');
 const router = new KoaRouter();
 
 router.get('/:modelId', async (ctx) => {
-  ctx.body = await fatDataSvc.getDataModelById(ctx.request.params.modelId);
+  ctx.body = await fatDataSvc.getFatDataModelById(ctx.request.params.modelId);
 });
 
 router.put('/', async (ctx) => {
@@ -17,7 +17,7 @@ router.put('/', async (ctx) => {
 });
 
 router.patch('/:modelId', async (ctx) => {
-  await fatDataSvc.updateDataModel(ctx.request.body);
+  await fatDataSvc.updateDataModel(ctx.request.params.modelId, ctx.request.body.updateCondition);
 });
 
 router.post('/:modelId', async (ctx) => {
@@ -25,7 +25,7 @@ router.post('/:modelId', async (ctx) => {
 });
 
 router.del('/:modelId', async (ctx) => {
-  await fatDataSvc.delDataModel(ctx.request.body);
+  await fatDataSvc.delDataModel(ctx.request.params.modelId);
 });
 
 module.exports = {
