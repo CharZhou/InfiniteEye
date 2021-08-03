@@ -42,19 +42,29 @@ async function updateDataModel (modelId, updateCondition) {
 
 }
 
+async function createFatDataModel (mongooseClient, fatDataEntity) {
+  const propertyTypeMapping = {
+    String: SchemaType.String,
+    Number: SchemaType.Number,
+    ObjectId: SchemaType.ObjectId,
+  };
+  if (!(fatDataEntity.model_name in Object.keys(mongooseClient.models))) {
+    const schema = {};
+    for await (const property of fatDataEntity.properties) {
+      schema[property.key] = { type: propertyTypeMapping[property.type] };
+    }
+    return mongooseClient.model(fatDataEntity.model_name, schema, fatDataEntity.collection_name, true);
+  }
+}
+
 async function queryDataModel (modelId, queryCondition, queryOptions) {
   const fatDataEntity = await getDataModelById(modelId);
   const dataSystemEntity = await getDataSystemById(fatDataEntity.belong_system);
   const mongooseClient = await getDataSourceMongooseClient(dataSystemEntity.database_name);
-  const schema = {};
-  for await (const property of fatDataEntity.properties) {
-    schema[property.key] = { type: SchemaType.String };
-  }
-  if (!(fatDataEntity.collection_name in Object.keys(mongooseClient.models))) {
-    await mongooseClient.model(fatDataEntity.collection_name, schema, fatDataEntity.collection_name, true);
-  }
-  const model = await mongooseClient.model(fatDataEntity.collection_name);
-  return model.find(queryCondition, queryOptions);
+  await createFatDataModel(mongooseClient, fatDataEntity);
+  const visibleKeys = fatDataEntity.properties.map(property => property.key);
+  const model = await mongooseClient.model(fatDataEntity.model_name);
+  return model.find(queryCondition, visibleKeys, queryOptions);
 }
 
 module.exports = {

@@ -34,7 +34,7 @@ describe('胖数据业务测试', () => {
 
   it('查询胖数据业务数据', async () => {
     console.log(await fatDataSvc.queryDataModel(newDataModelId, {
-      price: 0,
+      create_id: '605f2a8eeaa87b6fb80f8bb0',
     }, {}));
   });
 });
