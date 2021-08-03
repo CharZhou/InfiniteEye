@@ -11,7 +11,7 @@ describe('数据系统业务测试', () => {
   let dataSystemId;
 
   it('添加数据系统', async () => {
-    const dataSystemEntity = await dataSystemSvc.addDataSystem('测试系统', 'test_data_2');
+    const dataSystemEntity = await dataSystemSvc.addDataSystem('全校通', 'easyschool_export');
     dataSystemId = dataSystemEntity.id;
   });
 

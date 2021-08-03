@@ -28,7 +28,7 @@ async function addDataSystem (systemName, databaseName) {
   });
   await dataSystemEntity.save();
   await createUser(dataSystemEntity.system_user, dataSystemEntity.system_password, [{
-    role: 'readWrite',
+    role: 'dbOwner',
     db: databaseName,
   }]);
   return dataSystemEntity;

@@ -1,8 +1,10 @@
 const { getMongooseModel, StringToObjectId } = require('../utils/mongoose');
+const { getDataSourceMongooseClient, SchemaType } = require('../database/mongoose');
+const { getDataSystemById } = require('./datasystem');
 
 async function getDataModelById (modelId) {
   const FatDataModel = await getMongooseModel('FatDataModel');
-  return FatDataModel.findById(modelId).populate('modelProperty');
+  return FatDataModel.findById(modelId).populate('properties');
 }
 
 async function addModelProperty (propertyName, propertyKey) {
@@ -40,8 +42,19 @@ async function updateDataModel (modelId, updateCondition) {
 
 }
 
-async function queryDataModel (modelId, queryCondition) {
-
+async function queryDataModel (modelId, queryCondition, queryOptions) {
+  const fatDataEntity = await getDataModelById(modelId);
+  const dataSystemEntity = await getDataSystemById(fatDataEntity.belong_system);
+  const mongooseClient = await getDataSourceMongooseClient(dataSystemEntity.database_name);
+  const schema = {};
+  for await (const property of fatDataEntity.properties) {
+    schema[property.key] = { type: SchemaType.String };
+  }
+  if (!(fatDataEntity.collection_name in Object.keys(mongooseClient.models))) {
+    await mongooseClient.model(fatDataEntity.collection_name, schema, fatDataEntity.collection_name, true);
+  }
+  const model = await mongooseClient.model(fatDataEntity.collection_name);
+  return model.find(queryCondition, queryOptions);
 }
 
 module.exports = {

@@ -3,8 +3,8 @@ const fatDataSvc = require('../src/lib/services/fatdata');
 const { initDatabase } = require('../dist/database');
 
 describe('胖数据业务测试', () => {
-  let newDataModelId = null;
-  const systemId = '6107dbd2f173f105f49e4e4d';
+  let newDataModelId = '61089313c6ed113452829580';
+  const systemId = '610891b598719d2f733a3050';
 
   beforeEach(async () => {
     await initDatabase();
@@ -12,17 +12,17 @@ describe('胖数据业务测试', () => {
 
   it('创建胖数据业务模型', async () => {
     const dataModel = await fatDataSvc.addDataModel(
-      '用户信息',
-      'users',
+      '校园快递',
+      'school_express',
       systemId, [{
-        name: '用户id',
-        key: 'id',
+        name: '订单状态',
+        key: 'status',
       }, {
-        name: '用户名称',
-        key: 'name',
+        name: '下单时间',
+        key: 'create_time',
       }, {
-        name: '用户密码',
-        key: 'password',
+        name: '下单用户ID',
+        key: 'create_id',
       }]);
 
     newDataModelId = dataModel.id;
@@ -30,5 +30,11 @@ describe('胖数据业务测试', () => {
 
   it('查询胖数据业务模型', async () => {
     await fatDataSvc.getDataModelById(newDataModelId);
+  });
+
+  it('查询胖数据业务数据', async () => {
+    console.log(await fatDataSvc.queryDataModel(newDataModelId, {
+      price: 0,
+    }, {}));
   });
 });
