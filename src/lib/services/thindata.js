@@ -47,11 +47,19 @@ async function updateDataModel (modelId, updateCondition) {
 }
 
 async function queryFatDataModel (databaseName, dataModelRef, currentModelData) {
-  const queryCondition = dataModelRef.filter_condition;
+  const queryCondition = dataModelRef.filter_condition || {};
   if (currentModelData[dataModelRef.source_key]) {
     queryCondition[dataModelRef.target_key] = currentModelData[dataModelRef.source_key];
   }
-  return fatDataSvc.queryDataModel(dataModelRef.target_model, queryCondition, {});
+  return fatDataSvc.queryDataModel(dataModelRef.target_model, queryCondition);
+}
+
+async function queryThinDataModel (dataModelRef, currentModelData) {
+  const queryCondition = dataModelRef.filter_condition || {};
+  if (currentModelData[dataModelRef.source_key]) {
+    queryCondition[dataModelRef.target_key] = currentModelData[dataModelRef.source_key];
+  }
+  return queryDataModel(dataModelRef.target_model, queryCondition);
 }
 
 async function queryDataModel (modelId, queryCondition) {
@@ -60,14 +68,30 @@ async function queryDataModel (modelId, queryCondition) {
   const initModelData = {};
 
   for await (const property of thinDataEntity.properties) {
-    if (property.type !== 'FatModelRef') {
+    if (['FatModelRef', 'ThinModelRef'].indexOf(property.type) === -1) {
       initModelData[property.key] = queryCondition[property.key] || null;
     }
   }
 
+  // await Promise.all(thinDataEntity.properties.map(async property => {
+  //   if (property.type === 'FatModelRef') {
+  //     initModelData[property.key] = await queryFatDataModel(dataSystemEntity.database_name, property.ref, initModelData);
+  //   }
+  // }).map(async property => {
+  //   if (property.type === 'ThinModelRef') {
+  //     initModelData[property.key] = await queryThinDataModel(property.ref, initModelData);
+  //   }
+  // }));
+
   for await (const property of thinDataEntity.properties) {
     if (property.type === 'FatModelRef') {
       initModelData[property.key] = await queryFatDataModel(dataSystemEntity.database_name, property.ref, initModelData);
+    }
+  }
+
+  for await (const property of thinDataEntity.properties) {
+    if (property.type === 'ThinModelRef') {
+      initModelData[property.key] = await queryThinDataModel(property.ref, initModelData);
     }
   }
 

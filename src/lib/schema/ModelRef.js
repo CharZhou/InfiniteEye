@@ -1,4 +1,4 @@
-const { SchemaType } = require('../../database/mongoose');
+const { SchemaType } = require('../database/mongoose');
 
 module.exports = {
   target_model: { type: SchemaType.ObjectId, required: true },

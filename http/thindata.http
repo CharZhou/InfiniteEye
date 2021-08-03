@@ -2,7 +2,7 @@
 GET http://localhost:40078/thindata/6108f5be7567f960388a2321
 
 ### 查询瘦数据模型的数据
-POST http://localhost:40078/thindata/6108f5be7567f960388a2321
+POST http://localhost:40078/thindata/610923028b3faf0494740a74
 Content-Type: application/json
 
 {

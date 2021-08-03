@@ -1,13 +1,13 @@
 const { SchemaType, MongooseSchema } = require('../database/mongoose');
-const FatModelRef = require('../schema/ThinDataModel/FatModelRef');
+const ModelRef = require('../schema/ModelRef');
 
 module.exports = {
   schema: {
     name: { type: SchemaType.String, require: true },
     key: { type: SchemaType.String, require: true },
-    type: { type: SchemaType.String, require: true, enum: ['ObjectId', 'String', 'Number', 'Data', 'FatModelRef'] },
+    type: { type: SchemaType.String, require: true, enum: ['ObjectId', 'String', 'Number', 'Data', 'FatModelRef', 'ThinModelRef'] },
     ref: {
-      type: new MongooseSchema(FatModelRef),
+      type: new MongooseSchema(ModelRef),
     },
   },
 };

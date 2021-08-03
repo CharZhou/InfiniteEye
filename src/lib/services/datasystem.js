@@ -7,14 +7,17 @@ async function getDataSystemById (systemId) {
   return DataSystem.findById(systemId);
 }
 
-async function createMongodbUser (username, password, roles) {
+async function createMongodbUser (username, password, databaseName) {
   const mongooseClient = await getDataSourceDefaultMongooseClient();
   const mongodbClient = mongooseClient.getClient();
   const adminDb = mongodbClient.db().admin();
   await adminDb.addUser(username,
     password,
     {
-      roles: roles,
+      roles: [{
+        role: 'dbOwner',
+        db: databaseName,
+      }],
     });
 }
 
@@ -27,10 +30,7 @@ async function addDataSystem (systemName, databaseName) {
     system_password: randomPwdJs.olustur(20),
   });
   await dataSystemEntity.save();
-  await createMongodbUser(dataSystemEntity.system_user, dataSystemEntity.system_password, [{
-    role: 'dbOwner',
-    db: databaseName,
-  }]);
+  await createMongodbUser(dataSystemEntity.system_user, dataSystemEntity.system_password, dataSystemEntity.database_name);
   return dataSystemEntity;
 }
 

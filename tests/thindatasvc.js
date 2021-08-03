@@ -11,22 +11,33 @@ describe('瘦数据业务测试', () => {
 
   it('创建瘦数据业务模型', async () => {
     await thinDataSvc.addDataModel(
-      '用户所有有效的校园快递订单',
+      '用户所有有效的校园订单',
       systemId, [{
         name: '用户ID',
         key: 'id',
         type: 'ObjectId',
       }, {
-        name: '订单列表',
-        key: 'order_list',
-        type: 'FatModelRef',
+        name: '快递订单列表',
+        key: 'express_order_list',
+        type: 'ThinModelRef',
         ref: {
-          target_model: '61089313c6ed113452829580',
+          target_model: '6108f5be7567f960388a2321',
           filter_condition: {
-            status: 'DeliveryFinish',
           },
           source_key: 'id',
-          target_key: 'create_id',
+          target_key: 'id',
+        },
+      },
+      {
+        name: '闪送订单列表',
+        key: 'hyper_order_list',
+        type: 'ThinModelRef',
+        ref: {
+          target_model: '610921cd3401d50460d2dcac',
+          filter_condition: {
+          },
+          source_key: 'id',
+          target_key: 'id',
         },
       }]);
   });
@@ -36,7 +47,7 @@ describe('瘦数据业务测试', () => {
   });
 
   it('查询瘦数据业务数据', async () => {
-    console.log(await thinDataSvc.queryDataModel('6108f5be7567f960388a2321', {
+    console.log(await thinDataSvc.queryDataModel('610923028b3faf0494740a74', {
       id: '605f2a8eeaa87b6fb80f8bb0',
     }));
   });
