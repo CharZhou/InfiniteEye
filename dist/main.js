@@ -15,5 +15,3 @@ async function startApp () {
   await loadApp();
   await startApp();
 })();
-
-module.exports = { initDatabase };
