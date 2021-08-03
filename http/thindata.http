@@ -1,7 +1,7 @@
-### 查询胖数据模型
+### 查询瘦数据模型
 GET http://localhost:40078/thindata/6108f5be7567f960388a2321
 
-### 查询胖数据模型的数据
+### 查询瘦数据模型的数据
 POST http://localhost:40078/thindata/6108f5be7567f960388a2321
 Content-Type: application/json
 
