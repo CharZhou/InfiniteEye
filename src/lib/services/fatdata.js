@@ -7,7 +7,7 @@ async function getFatDataModelById (modelId) {
   return FatDataModel.findById(modelId).populate('properties');
 }
 
-async function addModelProperty (propertyName, propertyKey, propertyType) {
+async function generateModelProperty (propertyName, propertyKey, propertyType) {
   const DataProperty = await getMongooseModel('DataProperty');
   const newDataProperty = new DataProperty({
     name: propertyName,
@@ -21,7 +21,7 @@ async function addModelProperty (propertyName, propertyKey, propertyType) {
 async function addDataModel (modelName, collectionName, belongSystemId, modelProperties) {
   const FatDataModel = await getMongooseModel('FatDataModel');
   const modelPropertyArray = await Promise.all(modelProperties.map(async modelProperty => {
-    return addModelProperty(modelProperty.name, modelProperty.key, modelProperty.type);
+    return generateModelProperty(modelProperty.name, modelProperty.key, modelProperty.type);
   }));
   const newFatDataEntity = new FatDataModel({
     model_name: modelName,
@@ -39,7 +39,13 @@ async function delDataModel (modelId) {
   return 1;
 }
 
-async function updateDataModel (modelId, updateCondition) {
+async function updateDataModel (modelId, modelInfo) {
+  const FatDataModel = await getMongooseModel('FatDataModel');
+  const fatDataEntity = await FatDataModel.findById(modelId);
+  for (const key in modelInfo) {
+    fatDataEntity.set(key, modelInfo[key]);
+  }
+  await fatDataEntity.save();
   return 1;
 }
 
@@ -69,10 +75,53 @@ async function queryDataModel (modelId, queryCondition, queryOption) {
   return model.find(queryCondition, visibleKeys, queryOption);
 }
 
+async function addModelProperty (modelId, propertyData) {
+  const FatDataModel = await getMongooseModel('FatDataModel');
+  const fatDataEntity = await FatDataModel.findById(modelId);
+  const dataPropertyEntity = await generateModelProperty(propertyData.name, propertyData.key, propertyData.type);
+  fatDataEntity.properties.push(dataPropertyEntity.id);
+  await fatDataEntity.save();
+  return 1;
+}
+
+async function updateModelProperty (modelId, propertyId, propertyData) {
+  const FatDataModel = await getMongooseModel('FatDataModel');
+  const fatDataEntity = await FatDataModel.findById(modelId);
+  if (fatDataEntity.properties.indexOf(propertyId) === -1) {
+    return 0;
+  }
+  const DataProperty = await getMongooseModel('DataProperty');
+  const dataPropertyEntity = await DataProperty.findById(propertyId);
+  for (const key in propertyData) {
+    dataPropertyEntity.set(key, propertyData[key]);
+  }
+  await dataPropertyEntity.save();
+  return 1;
+}
+
+async function delModelProperty (modelId, propertyId) {
+  const FatDataModel = await getMongooseModel('FatDataModel');
+  const fatDataEntity = await FatDataModel.findById(modelId);
+  if (fatDataEntity.properties.indexOf(propertyId) === -1) {
+    return 0;
+  }
+  const DataProperty = await getMongooseModel('DataProperty');
+  await DataProperty.findByIdAndDelete(propertyId);
+  await FatDataModel.findByIdAndUpdate(modelId, {
+    $pull: {
+      properties: propertyId,
+    },
+  });
+  return 1;
+}
+
 module.exports = {
   addDataModel,
   getFatDataModelById,
   updateDataModel,
   delDataModel,
   queryDataModel,
+  addModelProperty,
+  updateModelProperty,
+  delModelProperty,
 };

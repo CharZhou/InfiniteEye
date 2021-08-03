@@ -17,11 +17,23 @@ router.put('/', async (ctx) => {
 });
 
 router.patch('/:modelId', async (ctx) => {
-  await fatDataSvc.updateDataModel(ctx.request.params.modelId, ctx.request.body.updateCondition);
+  await fatDataSvc.updateDataModel(ctx.request.params.modelId, ctx.request.body);
 });
 
 router.post('/:modelId', async (ctx) => {
   ctx.body = await fatDataSvc.queryDataModel(ctx.request.params.modelId, ctx.request.body.queryCondition, ctx.request.body.queryOption);
+});
+
+router.post('/:modelId/:propertyId', async (ctx) => {
+  ctx.body = await fatDataSvc.updateModelProperty(ctx.request.params.modelId, ctx.request.params.propertyId, ctx.request.body);
+});
+
+router.add('/:modelId/property', async (ctx) => {
+  ctx.body = await fatDataSvc.addModelProperty(ctx.request.params.modelId, ctx.request.body);
+});
+
+router.del('/:modelId/:propertyId', async (ctx) => {
+  ctx.body = await fatDataSvc.delModelProperty(ctx.request.params.modelId, ctx.request.request.params.propertyId);
 });
 
 router.del('/:modelId', async (ctx) => {

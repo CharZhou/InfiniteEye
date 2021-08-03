@@ -7,7 +7,7 @@ async function getThinDataModelById (modelId) {
   return ThinDataModel.findById(modelId).populate('properties');
 }
 
-async function addModelProperty (propertyName, propertyKey, propertyType, propertyRef) {
+async function generateModelProperty (propertyName, propertyKey, propertyType, propertyRef) {
   const DataProperty = await getMongooseModel('DataProperty');
   const dataProperties = {
     name: propertyName,
@@ -25,7 +25,7 @@ async function addModelProperty (propertyName, propertyKey, propertyType, proper
 async function addDataModel (modelName, belongSystemId, modelProperties) {
   const ThinDataModel = await getMongooseModel('ThinDataModel');
   const modelPropertyArray = await Promise.all(modelProperties.map(async modelProperty => {
-    return addModelProperty(modelProperty.name, modelProperty.key, modelProperty.type, modelProperty.ref);
+    return generateModelProperty(modelProperty.name, modelProperty.key, modelProperty.type, modelProperty.ref);
   }));
   const newThinDataModel = new ThinDataModel({
     model_name: modelName,
@@ -42,7 +42,13 @@ async function delDataModel (modelId) {
   return 1;
 }
 
-async function updateDataModel (modelId, updateCondition) {
+async function updateDataModel (modelId, modelInfo) {
+  const ThinDataModel = await getMongooseModel('ThinDataModel');
+  const rawThinDataModel = await ThinDataModel.findById(modelId);
+  for (const key in modelInfo) {
+    rawThinDataModel.set(key, modelInfo[key]);
+  }
+  await rawThinDataModel.save();
   return 1;
 }
 
@@ -98,10 +104,53 @@ async function queryDataModel (modelId, queryCondition) {
   return initModelData;
 }
 
+async function addModelProperty (modelId, propertyData) {
+  const ThinDataModel = await getMongooseModel('ThinDataModel');
+  const thinDataEntity = await ThinDataModel.findById(modelId);
+  const dataPropertyEntity = await generateModelProperty(propertyData.name, propertyData.key, propertyData.type);
+  thinDataEntity.properties.push(dataPropertyEntity.id);
+  await thinDataEntity.save();
+  return 1;
+}
+
+async function updateModelProperty (modelId, propertyId, propertyData) {
+  const ThinDataModel = await getMongooseModel('ThinDataModel');
+  const thinDataModel = await ThinDataModel.findById(modelId);
+  if (thinDataModel.properties.indexOf(propertyId) === -1) {
+    return 0;
+  }
+  const DataProperty = await getMongooseModel('DataProperty');
+  const dataPropertyEntity = await DataProperty.findById(propertyId);
+  for (const key in propertyData) {
+    dataPropertyEntity.set(key, propertyData[key]);
+  }
+  await dataPropertyEntity.save();
+  return 1;
+}
+
+async function delModelProperty (modelId, propertyId) {
+  const ThinDataModel = await getMongooseModel('ThinDataModel');
+  const thinDataModel = await ThinDataModel.findById(modelId);
+  if (thinDataModel.properties.indexOf(propertyId) === -1) {
+    return 0;
+  }
+  const DataProperty = await getMongooseModel('DataProperty');
+  await DataProperty.findByIdAndDelete(propertyId);
+  await ThinDataModel.findByIdAndUpdate(modelId, {
+    $pull: {
+      properties: propertyId,
+    },
+  });
+  return 1;
+}
+
 module.exports = {
   addDataModel,
   getThinDataModelById,
   updateDataModel,
   delDataModel,
   queryDataModel,
+  addModelProperty,
+  updateModelProperty,
+  delModelProperty,
 };
