@@ -7,11 +7,12 @@ async function getDataModelById (modelId) {
   return FatDataModel.findById(modelId).populate('properties');
 }
 
-async function addModelProperty (propertyName, propertyKey) {
+async function addModelProperty (propertyName, propertyKey, propertyType) {
   const DataProperty = await getMongooseModel('DataProperty');
   const newDataProperty = new DataProperty({
     name: propertyName,
     key: propertyKey,
+    type: propertyType,
   });
   await newDataProperty.save();
   return newDataProperty;
@@ -20,7 +21,7 @@ async function addModelProperty (propertyName, propertyKey) {
 async function addDataModel (modelName, collectionName, belongSystemId, modelProperties) {
   const FatDataModel = await getMongooseModel('FatDataModel');
   const modelPropertyArray = await Promise.all(modelProperties.map(async modelProperty => {
-    return addModelProperty(modelProperty.name, modelProperty.key);
+    return addModelProperty(modelProperty.name, modelProperty.key, modelProperty.type);
   }));
   const newFatDataEntity = new FatDataModel({
     model_name: modelName,
@@ -57,14 +58,14 @@ async function createFatDataModel (mongooseClient, fatDataEntity) {
   }
 }
 
-async function queryDataModel (modelId, queryCondition, queryOptions) {
+async function queryDataModel (modelId, queryCondition, queryOption) {
   const fatDataEntity = await getDataModelById(modelId);
   const dataSystemEntity = await getDataSystemById(fatDataEntity.belong_system);
   const mongooseClient = await getDataSourceMongooseClient(dataSystemEntity.database_name);
   await createFatDataModel(mongooseClient, fatDataEntity);
   const visibleKeys = fatDataEntity.properties.map(property => property.key);
   const model = await mongooseClient.model(fatDataEntity.model_name);
-  return model.find(queryCondition, visibleKeys, queryOptions);
+  return model.find(queryCondition, visibleKeys, queryOption);
 }
 
 module.exports = {

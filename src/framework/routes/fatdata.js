@@ -21,7 +21,7 @@ router.patch('/:modelId', async (ctx) => {
 });
 
 router.post('/:modelId', async (ctx) => {
-  await fatDataSvc.queryDataModel(ctx.request.body);
+  ctx.body = await fatDataSvc.queryDataModel(ctx.request.params.modelId, ctx.request.body.queryCondition, ctx.request.body.queryOption);
 });
 
 router.del('/:modelId', async (ctx) => {

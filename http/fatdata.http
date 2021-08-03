@@ -1,0 +1,13 @@
+### 查询胖数据模型
+GET http://localhost:40078/fatdata/61089313c6ed113452829580
+
+### 查询胖数据模型的数据
+POST http://localhost:40078/fatdata/61089313c6ed113452829580
+Content-Type: application/json
+
+{
+  "queryCondition": {
+    "create_id": "605f2a8eeaa87b6fb80f8bb0"
+  },
+  "queryOption": {}
+}
