@@ -1,6 +1,5 @@
 const KoaRouter = require('koa-router');
 const thinDataSvc = require('../../lib/services/thindata');
-const fatDataSvc = require('../../lib/services/fatdata');
 
 const router = new KoaRouter();
 
