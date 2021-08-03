@@ -31,7 +31,7 @@ router.post('/:modelId/:propertyId', async (ctx) => {
   ctx.body = await thinDataSvc.updateModelProperty(ctx.request.params.modelId, ctx.request.params.propertyId, ctx.request.body);
 });
 
-router.add('/:modelId/property', async (ctx) => {
+router.put('/:modelId/property', async (ctx) => {
   ctx.body = await thinDataSvc.addModelProperty(ctx.request.params.modelId, ctx.request.body);
 });
 
