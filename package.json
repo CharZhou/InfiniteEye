@@ -8,6 +8,7 @@
     "url": "https://char.run"
   },
   "private": "true",
+  "license": "GPL-3.0",
   "scripts": {
     "main": "node dist/main.js",
     "dev": "cross-env NODE_ENV=development npm run main",
