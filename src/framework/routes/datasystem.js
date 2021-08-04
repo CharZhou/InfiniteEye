@@ -1,6 +1,5 @@
 const KoaRouter = require('koa-router');
 const dataSystemSvc = require('../../lib/services/datasystem');
-const fatDataSvc = require('../../lib/services/fatdata');
 
 const router = new KoaRouter();
 

@@ -28,7 +28,8 @@
     "mongoose": "^5.13.4",
     "mysql": "^2.18.1",
     "randompasswordjs": "^1.0.3",
-    "sequelize": "^6.6.5"
+    "sequelize": "^6.6.5",
+    "servertiming": "^1.5.0"
   },
   "devDependencies": {
     "chai": "^4.3.4",

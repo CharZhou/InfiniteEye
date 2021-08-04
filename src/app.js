@@ -18,8 +18,8 @@ const app = new Koa({
 
 async function loadApp () {
   app.use(koaLog4j.koaLogger(log4j.getLogger('http'), { level: 'auto' }));
-  app.use(cors());
   app.use(responseTimeMiddleware());
+  app.use(cors());
   app.use(body({
     multipart: true,
   }));

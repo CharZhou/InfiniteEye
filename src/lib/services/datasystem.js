@@ -24,25 +24,32 @@ async function createMongoDbUser (username, password, databaseName) {
         db: databaseName,
       }],
     });
+  return 1;
 }
 
 async function deleteMongoDbUser (username) {
   const mongooseClient = await getDataSourceDefaultMongooseClient();
   const mongodbClient = mongooseClient.getClient();
   const adminDb = mongodbClient.db().admin();
-  await adminDb.dropUser(username);
+  await adminDb.removeUser(username);
+  return 1;
 }
 
 async function addDataSystem (systemName, databaseName) {
   const DataSystem = await getMongooseModel('DataSystem');
+  const randomUser = randomPwdJs.olustur(10);
+  const randomPassword = randomPwdJs.olustur(20);
+
+  await createMongoDbUser(randomUser, randomPassword, databaseName);
+
   const dataSystemEntity = new DataSystem({
     system_name: systemName,
     database_name: databaseName,
-    system_user: randomPwdJs.olustur(10),
-    system_password: randomPwdJs.olustur(20),
+    system_user: randomUser,
+    system_password: randomPassword,
   });
   await dataSystemEntity.save();
-  await createMongoDbUser(dataSystemEntity.system_user, dataSystemEntity.system_password, dataSystemEntity.database_name);
+
   return dataSystemEntity;
 }
 
