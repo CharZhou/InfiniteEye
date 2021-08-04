@@ -7,7 +7,12 @@ async function getDataSystemById (systemId) {
   return DataSystem.findById(systemId);
 }
 
-async function createMongodbUser (username, password, databaseName) {
+async function listDataSystem () {
+  const DataSystem = await getMongooseModel('DataSystem');
+  return DataSystem.find({});
+}
+
+async function createMongoDbUser (username, password, databaseName) {
   const mongooseClient = await getDataSourceDefaultMongooseClient();
   const mongodbClient = mongooseClient.getClient();
   const adminDb = mongodbClient.db().admin();
@@ -21,6 +26,13 @@ async function createMongodbUser (username, password, databaseName) {
     });
 }
 
+async function deleteMongoDbUser (username) {
+  const mongooseClient = await getDataSourceDefaultMongooseClient();
+  const mongodbClient = mongooseClient.getClient();
+  const adminDb = mongodbClient.db().admin();
+  await adminDb.dropUser(username);
+}
+
 async function addDataSystem (systemName, databaseName) {
   const DataSystem = await getMongooseModel('DataSystem');
   const dataSystemEntity = new DataSystem({
@@ -30,11 +42,24 @@ async function addDataSystem (systemName, databaseName) {
     system_password: randomPwdJs.olustur(20),
   });
   await dataSystemEntity.save();
-  await createMongodbUser(dataSystemEntity.system_user, dataSystemEntity.system_password, dataSystemEntity.database_name);
+  await createMongoDbUser(dataSystemEntity.system_user, dataSystemEntity.system_password, dataSystemEntity.database_name);
   return dataSystemEntity;
+}
+
+async function delDataSystem (systemId) {
+  const dataSystemEntity = await getDataSystemById(systemId);
+  if (!dataSystemEntity) {
+    return 0;
+  }
+  const DataSystem = await getMongooseModel('DataSystem');
+  await deleteMongoDbUser(dataSystemEntity.system_user);
+  await DataSystem.findByIdAndDelete(dataSystemEntity.id);
+  return 1;
 }
 
 module.exports = {
   getDataSystemById,
   addDataSystem,
+  listDataSystem,
+  delDataSystem,
 };

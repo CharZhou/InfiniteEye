@@ -6,6 +6,9 @@ const cors = require('@koa/cors');
 const body = require('koa-body');
 const routeUtil = require('./lib/utils/route');
 const exceptionMiddleware = require('./framework/middlewares/exception');
+const paginationMiddleware = require('./framework/middlewares/pagination');
+const returnWrapperMiddleware = require('./framework/middlewares/returnwrapper');
+
 const responseTimeMiddleware = require('./framework/middlewares/responsetime');
 const { getLogger } = require('./lib/utils/log');
 
@@ -21,6 +24,8 @@ async function loadApp () {
     multipart: true,
   }));
   app.use(exceptionMiddleware());
+  app.use(returnWrapperMiddleware());
+  app.use(paginationMiddleware());
 
   await routeUtil.loadRoutes(app);
   getLogger('route').info('Route Load Finished');
