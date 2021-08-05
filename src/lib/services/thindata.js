@@ -12,12 +12,11 @@ async function getThinDataModelById (modelId) {
   return ThinDataModel.findById(modelId).populate('properties');
 }
 
-async function addDataModel (modelName, belongSystemId, modelPropertyIds) {
+async function addDataModel (modelName, belongSystemId) {
   const ThinDataModel = await getMongooseModel('ThinDataModel');
   const newThinDataModel = new ThinDataModel({
     model_name: modelName,
     belong_system: StringToObjectId(belongSystemId),
-    properties: modelPropertyIds,
   });
   await newThinDataModel.save();
   return newThinDataModel;
@@ -31,11 +30,12 @@ async function delDataModel (modelId) {
 
 async function updateDataModel (modelId, modelInfo) {
   const ThinDataModel = await getMongooseModel('ThinDataModel');
-  const rawThinDataModel = await ThinDataModel.findById(modelId);
+  const thinDataModel = await ThinDataModel.findById(modelId);
   for (const key in modelInfo) {
-    rawThinDataModel.set(key, modelInfo[key]);
+    thinDataModel.set(key, modelInfo[key]);
   }
-  await rawThinDataModel.save();
+  thinDataModel.update_time = Date.now();
+  await thinDataModel.save();
   return 1;
 }
 

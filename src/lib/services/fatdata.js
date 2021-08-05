@@ -13,13 +13,12 @@ async function getFatDataModelById (modelId) {
   return FatDataModel.findById(modelId).populate('properties');
 }
 
-async function addDataModel (modelName, collectionName, belongSystemId, modelPropertyIds) {
+async function addDataModel (modelName, collectionName, belongSystemId) {
   const FatDataModel = await getMongooseModel('FatDataModel');
   const newFatDataEntity = new FatDataModel({
     model_name: modelName,
     collection_name: collectionName,
     belong_system: StringToObjectId(belongSystemId),
-    properties: modelPropertyIds,
   });
   await newFatDataEntity.save();
   return newFatDataEntity;
@@ -37,6 +36,7 @@ async function updateDataModel (modelId, modelInfo) {
   for (const key in modelInfo) {
     fatDataEntity.set(key, modelInfo[key]);
   }
+  fatDataEntity.update_time = Date.now();
   await fatDataEntity.save();
   return 1;
 }

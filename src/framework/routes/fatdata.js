@@ -16,7 +16,6 @@ router.put('/', async (ctx) => {
     ctx.request.body.name,
     ctx.request.body.collectionName,
     ctx.request.body.systemId,
-    ctx.request.body.propertyIds,
   );
 });
 

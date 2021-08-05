@@ -15,7 +15,6 @@ router.put('/', async (ctx) => {
   ctx.body = await thinDataSvc.addDataModel(
     ctx.request.body.name,
     ctx.request.body.systemId,
-    ctx.request.body.propertyIds,
   );
 });
 
