@@ -5,8 +5,8 @@ const allowedDataPropertyType = {
   Number: { label: '数字' },
   Date: { label: '日期' },
   ObjectId: { label: '唯一ID' },
-  FatDataModelRef: { label: '胖模型关联' },
-  ThinDataModelRef: { label: '瘦模型关联' },
+  FatModelRef: { label: '胖模型关联' },
+  ThinModelRef: { label: '瘦模型关联' },
 };
 
 const dataPropertyTypeMapping = {

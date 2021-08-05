@@ -9,6 +9,7 @@ module.exports = {
     type: { type: SchemaType.String, require: true, enum: Object.keys(allowedDataPropertyType) },
     ref: {
       type: new MongooseSchema(ModelRef),
+      require: true,
     },
   },
 };
