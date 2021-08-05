@@ -1,33 +1,24 @@
 const { getMongooseModel, StringToObjectId } = require('../utils/mongoose');
-const { getDataSourceMongooseClient, SchemaType } = require('../database/mongoose');
+const { getDataSourceMongooseClient } = require('../database/mongoose');
 const { getDataSystemById } = require('./datasystem');
+const { dataPropertyTypeMapping } = require('../../lib/constant/dataproperty');
+
+async function listFatDataModel () {
+  const FatDataModel = await getMongooseModel('FatDataModel');
+  return FatDataModel.find();
+}
 
 async function getFatDataModelById (modelId) {
   const FatDataModel = await getMongooseModel('FatDataModel');
   return FatDataModel.findById(modelId).populate('properties');
 }
 
-async function generateModelProperty (propertyName, propertyKey, propertyType) {
-  const DataProperty = await getMongooseModel('DataProperty');
-  const newDataProperty = new DataProperty({
-    name: propertyName,
-    key: propertyKey,
-    type: propertyType,
-  });
-  await newDataProperty.save();
-  return newDataProperty;
-}
-
-async function addDataModel (modelName, collectionName, belongSystemId, modelProperties) {
+async function addDataModel (modelName, collectionName, belongSystemId) {
   const FatDataModel = await getMongooseModel('FatDataModel');
-  const modelPropertyArray = await Promise.all(modelProperties.map(async modelProperty => {
-    return generateModelProperty(modelProperty.name, modelProperty.key, modelProperty.type);
-  }));
   const newFatDataEntity = new FatDataModel({
     model_name: modelName,
     collection_name: collectionName,
     belong_system: StringToObjectId(belongSystemId),
-    properties: modelPropertyArray,
   });
   await newFatDataEntity.save();
   return newFatDataEntity;
@@ -45,21 +36,34 @@ async function updateDataModel (modelId, modelInfo) {
   for (const key in modelInfo) {
     fatDataEntity.set(key, modelInfo[key]);
   }
+  fatDataEntity.update_time = Date.now();
   await fatDataEntity.save();
   return 1;
 }
 
+async function addDataModelProperty (modelId, propertyId) {
+  const FatDataModel = await getMongooseModel('FatDataModel');
+  const fatDataEntity = await FatDataModel.findById(modelId);
+  fatDataEntity.properties.push(propertyId);
+  await fatDataEntity.save();
+  return 1;
+}
+
+async function removeDataModelProperty (modelId, propertyId) {
+  const FatDataModel = await getMongooseModel('FatDataModel');
+  await FatDataModel.findByIdAndUpdate(modelId, {
+    $pull: {
+      properties: propertyId,
+    },
+  });
+  return 1;
+}
+
 async function createFatDataModel (mongooseClient, fatDataEntity) {
-  const propertyTypeMapping = {
-    String: SchemaType.String,
-    Number: SchemaType.Number,
-    ObjectId: SchemaType.ObjectId,
-    Date: SchemaType.Date,
-  };
   if (!(fatDataEntity.model_name in Object.keys(mongooseClient.models))) {
     const schema = {};
     for await (const property of fatDataEntity.properties) {
-      schema[property.key] = { type: propertyTypeMapping[property.type] };
+      schema[property.key] = { type: dataPropertyTypeMapping[property.type] };
     }
     return mongooseClient.model(fatDataEntity.model_name, schema, fatDataEntity.collection_name, true);
   }
@@ -75,53 +79,13 @@ async function queryDataModel (modelId, queryCondition, queryOption) {
   return model.find(queryCondition, visibleKeys, queryOption);
 }
 
-async function addModelProperty (modelId, propertyData) {
-  const FatDataModel = await getMongooseModel('FatDataModel');
-  const fatDataEntity = await FatDataModel.findById(modelId);
-  const dataPropertyEntity = await generateModelProperty(propertyData.name, propertyData.key, propertyData.type);
-  fatDataEntity.properties.push(dataPropertyEntity.id);
-  await fatDataEntity.save();
-  return 1;
-}
-
-async function updateModelProperty (modelId, propertyId, propertyData) {
-  const FatDataModel = await getMongooseModel('FatDataModel');
-  const fatDataEntity = await FatDataModel.findById(modelId);
-  if (fatDataEntity.properties.indexOf(propertyId) === -1) {
-    return 0;
-  }
-  const DataProperty = await getMongooseModel('DataProperty');
-  const dataPropertyEntity = await DataProperty.findById(propertyId);
-  for (const key in propertyData) {
-    dataPropertyEntity.set(key, propertyData[key]);
-  }
-  await dataPropertyEntity.save();
-  return 1;
-}
-
-async function delModelProperty (modelId, propertyId) {
-  const FatDataModel = await getMongooseModel('FatDataModel');
-  const fatDataEntity = await FatDataModel.findById(modelId);
-  if (fatDataEntity.properties.indexOf(propertyId) === -1) {
-    return 0;
-  }
-  const DataProperty = await getMongooseModel('DataProperty');
-  await DataProperty.findByIdAndDelete(propertyId);
-  await FatDataModel.findByIdAndUpdate(modelId, {
-    $pull: {
-      properties: propertyId,
-    },
-  });
-  return 1;
-}
-
 module.exports = {
-  addDataModel,
+  listFatDataModel,
   getFatDataModelById,
+  addDataModel,
   updateDataModel,
   delDataModel,
   queryDataModel,
-  addModelProperty,
-  updateModelProperty,
-  delModelProperty,
+  addDataModelProperty,
+  removeDataModelProperty,
 };

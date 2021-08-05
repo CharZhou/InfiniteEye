@@ -3,6 +3,10 @@ const thinDataSvc = require('../../lib/services/thindata');
 
 const router = new KoaRouter();
 
+router.get('/', async (ctx) => {
+  ctx.body = await thinDataSvc.listThinDataModel();
+});
+
 router.get('/:modelId', async (ctx) => {
   ctx.body = await thinDataSvc.getThinDataModelById(ctx.request.params.modelId);
 });
@@ -11,12 +15,11 @@ router.put('/', async (ctx) => {
   ctx.body = await thinDataSvc.addDataModel(
     ctx.request.body.name,
     ctx.request.body.systemId,
-    ctx.request.body.properties,
   );
 });
 
 router.patch('/:modelId', async (ctx) => {
-  await thinDataSvc.updateDataModel(ctx.request.params.modelId, ctx.request.body);
+  ctx.body = await thinDataSvc.updateDataModel(ctx.request.params.modelId, ctx.request.body);
 });
 
 router.post('/:modelId', async (ctx) => {
@@ -24,19 +27,15 @@ router.post('/:modelId', async (ctx) => {
 });
 
 router.del('/:modelId', async (ctx) => {
-  await thinDataSvc.delDataModel(ctx.request.params.modelId);
-});
-
-router.post('/:modelId/:propertyId', async (ctx) => {
-  ctx.body = await thinDataSvc.updateModelProperty(ctx.request.params.modelId, ctx.request.params.propertyId, ctx.request.body);
+  ctx.body = await thinDataSvc.delDataModel(ctx.request.params.modelId);
 });
 
 router.put('/:modelId/property', async (ctx) => {
-  ctx.body = await thinDataSvc.addModelProperty(ctx.request.params.modelId, ctx.request.body);
+  ctx.body = await thinDataSvc.addDataModelProperty(ctx.request.params.modelId, ctx.request.body.propertyId);
 });
 
 router.del('/:modelId/:propertyId', async (ctx) => {
-  ctx.body = await thinDataSvc.delModelProperty(ctx.request.params.modelId, ctx.request.request.params.propertyId);
+  ctx.body = await thinDataSvc.removeDataModelProperty(ctx.request.params.modelId, ctx.request.params.propertyId);
 });
 
 module.exports = {

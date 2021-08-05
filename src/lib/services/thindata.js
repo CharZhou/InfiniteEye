@@ -2,35 +2,21 @@ const { getMongooseModel, StringToObjectId } = require('../utils/mongoose');
 const { getDataSystemById } = require('./datasystem');
 const fatDataSvc = require('./fatdata');
 
+async function listThinDataModel () {
+  const ThinDataModel = await getMongooseModel('ThinDataModel');
+  return ThinDataModel.find();
+}
+
 async function getThinDataModelById (modelId) {
   const ThinDataModel = await getMongooseModel('ThinDataModel');
   return ThinDataModel.findById(modelId).populate('properties');
 }
 
-async function generateModelProperty (propertyName, propertyKey, propertyType, propertyRef) {
-  const DataProperty = await getMongooseModel('DataProperty');
-  const dataProperties = {
-    name: propertyName,
-    key: propertyKey,
-    type: propertyType,
-  };
-  if (propertyRef) {
-    dataProperties.ref = propertyRef;
-  }
-  const newDataProperty = new DataProperty(dataProperties);
-  await newDataProperty.save();
-  return newDataProperty;
-}
-
-async function addDataModel (modelName, belongSystemId, modelProperties) {
+async function addDataModel (modelName, belongSystemId) {
   const ThinDataModel = await getMongooseModel('ThinDataModel');
-  const modelPropertyArray = await Promise.all(modelProperties.map(async modelProperty => {
-    return generateModelProperty(modelProperty.name, modelProperty.key, modelProperty.type, modelProperty.ref);
-  }));
   const newThinDataModel = new ThinDataModel({
     model_name: modelName,
     belong_system: StringToObjectId(belongSystemId),
-    properties: modelPropertyArray,
   });
   await newThinDataModel.save();
   return newThinDataModel;
@@ -44,11 +30,12 @@ async function delDataModel (modelId) {
 
 async function updateDataModel (modelId, modelInfo) {
   const ThinDataModel = await getMongooseModel('ThinDataModel');
-  const rawThinDataModel = await ThinDataModel.findById(modelId);
+  const thinDataModel = await ThinDataModel.findById(modelId);
   for (const key in modelInfo) {
-    rawThinDataModel.set(key, modelInfo[key]);
+    thinDataModel.set(key, modelInfo[key]);
   }
-  await rawThinDataModel.save();
+  thinDataModel.update_time = Date.now();
+  await thinDataModel.save();
   return 1;
 }
 
@@ -104,38 +91,16 @@ async function queryDataModel (modelId, queryCondition) {
   return initModelData;
 }
 
-async function addModelProperty (modelId, propertyData) {
+async function addDataModelProperty (modelId, propertyId) {
   const ThinDataModel = await getMongooseModel('ThinDataModel');
-  const thinDataEntity = await ThinDataModel.findById(modelId);
-  const dataPropertyEntity = await generateModelProperty(propertyData.name, propertyData.key, propertyData.type);
-  thinDataEntity.properties.push(dataPropertyEntity.id);
-  await thinDataEntity.save();
+  const thinDataModelEntity = await ThinDataModel.findById(modelId);
+  thinDataModelEntity.properties.push(propertyId);
+  await thinDataModelEntity.save();
   return 1;
 }
 
-async function updateModelProperty (modelId, propertyId, propertyData) {
+async function removeDataModelProperty (modelId, propertyId) {
   const ThinDataModel = await getMongooseModel('ThinDataModel');
-  const thinDataModel = await ThinDataModel.findById(modelId);
-  if (thinDataModel.properties.indexOf(propertyId) === -1) {
-    return 0;
-  }
-  const DataProperty = await getMongooseModel('DataProperty');
-  const dataPropertyEntity = await DataProperty.findById(propertyId);
-  for (const key in propertyData) {
-    dataPropertyEntity.set(key, propertyData[key]);
-  }
-  await dataPropertyEntity.save();
-  return 1;
-}
-
-async function delModelProperty (modelId, propertyId) {
-  const ThinDataModel = await getMongooseModel('ThinDataModel');
-  const thinDataModel = await ThinDataModel.findById(modelId);
-  if (thinDataModel.properties.indexOf(propertyId) === -1) {
-    return 0;
-  }
-  const DataProperty = await getMongooseModel('DataProperty');
-  await DataProperty.findByIdAndDelete(propertyId);
   await ThinDataModel.findByIdAndUpdate(modelId, {
     $pull: {
       properties: propertyId,
@@ -150,7 +115,7 @@ module.exports = {
   updateDataModel,
   delDataModel,
   queryDataModel,
-  addModelProperty,
-  updateModelProperty,
-  delModelProperty,
+  addDataModelProperty,
+  removeDataModelProperty,
+  listThinDataModel,
 };

@@ -4,9 +4,9 @@ module.exports = {
   schema: {
     model_name: { type: SchemaType.String, required: true },
     collection_name: { type: SchemaType.String, required: true, unique: true },
-    properties: [{ type: SchemaType.ObjectId, ref: 'DataProperty' }],
+    properties: [{ type: SchemaType.ObjectId, ref: 'DataProperty', default: [] }],
     create_time: { type: SchemaType.Date, required: true, default: new Date() },
     update_time: { type: SchemaType.Date, required: true, default: new Date() },
-    belong_system: { type: SchemaType.ObjectId, ref: 'DataSystem' },
+    belong_system: { type: SchemaType.ObjectId, ref: 'DataSystem', required: true },
   },
 };
