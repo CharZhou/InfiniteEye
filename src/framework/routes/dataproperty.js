@@ -1,5 +1,6 @@
 const KoaRouter = require('koa-router');
 const dataPropertySvc = require('../../lib/services/dataproperty');
+const { allowedDataPropertyType } = require('../../lib/constant/dataproperty');
 
 const router = new KoaRouter();
 
@@ -17,6 +18,11 @@ router.del('/:propertyId', async (ctx) => {
 
 router.put('/', async (ctx) => {
   ctx.body = await dataPropertySvc.addDataProperty(ctx.request.body);
+});
+
+router.get('/config/allowedTypes', async (ctx) => {
+  console.log('allowedTypes');
+  ctx.body = allowedDataPropertyType;
 });
 
 module.exports = {

@@ -16,7 +16,7 @@ router.put('/', async (ctx) => {
 });
 
 router.patch('/:modelId', async (ctx) => {
-  await thinDataSvc.updateDataModel(ctx.request.params.modelId, ctx.request.body);
+  ctx.body = await thinDataSvc.updateDataModel(ctx.request.params.modelId, ctx.request.body);
 });
 
 router.post('/:modelId', async (ctx) => {
@@ -24,15 +24,15 @@ router.post('/:modelId', async (ctx) => {
 });
 
 router.del('/:modelId', async (ctx) => {
-  await thinDataSvc.delDataModel(ctx.request.params.modelId);
+  ctx.body = await thinDataSvc.delDataModel(ctx.request.params.modelId);
 });
 
 router.put('/:modelId/property', async (ctx) => {
-  await thinDataSvc.addDataModelProperty(ctx.request.params.modelId, ctx.request.body.propertyId);
+  ctx.body = await thinDataSvc.addDataModelProperty(ctx.request.params.modelId, ctx.request.body.propertyId);
 });
 
 router.del('/:modelId/:propertyId', async (ctx) => {
-  await thinDataSvc.removeDataModelProperty(ctx.request.params.modelId, ctx.request.params.propertyId);
+  ctx.body = await thinDataSvc.removeDataModelProperty(ctx.request.params.modelId, ctx.request.params.propertyId);
 });
 
 module.exports = {

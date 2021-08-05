@@ -1,6 +1,7 @@
 const { getMongooseModel, StringToObjectId } = require('../utils/mongoose');
-const { getDataSourceMongooseClient, SchemaType } = require('../database/mongoose');
+const { getDataSourceMongooseClient } = require('../database/mongoose');
 const { getDataSystemById } = require('./datasystem');
+const { dataPropertyTypeMapping } = require('../../lib/constant/dataproperty');
 
 async function listFatDataModel () {
   const FatDataModel = await getMongooseModel('FatDataModel');
@@ -59,16 +60,10 @@ async function removeDataModelProperty (modelId, propertyId) {
 }
 
 async function createFatDataModel (mongooseClient, fatDataEntity) {
-  const propertyTypeMapping = {
-    String: SchemaType.String,
-    Number: SchemaType.Number,
-    ObjectId: SchemaType.ObjectId,
-    Date: SchemaType.Date,
-  };
   if (!(fatDataEntity.model_name in Object.keys(mongooseClient.models))) {
     const schema = {};
     for await (const property of fatDataEntity.properties) {
-      schema[property.key] = { type: propertyTypeMapping[property.type] };
+      schema[property.key] = { type: dataPropertyTypeMapping[property.type] };
     }
     return mongooseClient.model(fatDataEntity.model_name, schema, fatDataEntity.collection_name, true);
   }
