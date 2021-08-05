@@ -3,6 +3,10 @@ const thinDataSvc = require('../../lib/services/thindata');
 
 const router = new KoaRouter();
 
+router.get('/', async (ctx) => {
+  ctx.body = await thinDataSvc.listThinDataModel();
+});
+
 router.get('/:modelId', async (ctx) => {
   ctx.body = await thinDataSvc.getThinDataModelById(ctx.request.params.modelId);
 });

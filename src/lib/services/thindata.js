@@ -2,6 +2,11 @@ const { getMongooseModel, StringToObjectId } = require('../utils/mongoose');
 const { getDataSystemById } = require('./datasystem');
 const fatDataSvc = require('./fatdata');
 
+async function listThinDataModel () {
+  const ThinDataModel = await getMongooseModel('ThinDataModel');
+  return ThinDataModel.find();
+}
+
 async function getThinDataModelById (modelId) {
   const ThinDataModel = await getMongooseModel('ThinDataModel');
   return ThinDataModel.findById(modelId).populate('properties');
@@ -112,4 +117,5 @@ module.exports = {
   queryDataModel,
   addDataModelProperty,
   removeDataModelProperty,
+  listThinDataModel,
 };
