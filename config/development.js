@@ -6,17 +6,17 @@ module.exports = {
   },
   mongodb: {
     loggerLevel: 'info',
-    uri: 'mongodb://root:root@localhost:27017/admin',
+    uri: 'mongodb://root:root@mongodb:27017/admin',
   },
   mysql: {
-    host: 'localhost',
+    host: 'mysql',
   },
   redis: {
-    host: 'localhost',
+    host: 'redis',
   },
   dataSource: {
     debug: true,
     loggerLevel: 'info',
-    uri: 'mongodb://root:root@localhost:27017/admin',
+    uri: 'mongodb://root:root@mongodb:27017/admin',
   },
 };
