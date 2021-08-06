@@ -1,6 +1,7 @@
 const { SchemaType, MongooseSchema } = require('../database/mongoose');
 const ModelRef = require('../schema/ModelRef');
 const { allowedDataPropertyType } = require('../constant/dataproperty');
+const DataTransferParam = require('../schema/DataTransferParam');
 
 module.exports = {
   schema: {
@@ -9,7 +10,11 @@ module.exports = {
     type: { type: SchemaType.String, require: true, enum: Object.keys(allowedDataPropertyType) },
     ref: {
       type: new MongooseSchema(ModelRef),
-      require: true,
+      default: () => {},
+    },
+    transfer: {
+      type: new MongooseSchema(DataTransferParam),
+      default: () => {},
     },
   },
 };

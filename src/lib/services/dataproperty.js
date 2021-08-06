@@ -12,6 +12,7 @@ async function addDataProperty (propertyData) {
     key: propertyData.key,
     type: propertyData.type,
     ref: propertyData.ref,
+    transfer: propertyData.transfer,
   });
   await newDataProperty.save();
   return newDataProperty;
