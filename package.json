@@ -24,7 +24,7 @@
     "koa-body": "^4.2.0",
     "koa-log4": "^2.3.2",
     "koa-router": "^10.0.0",
-    "log4js": "^6.3.0",
+    "log4js": "^6.4.0",
     "mongoose": "^5.13.4",
     "mysql": "^2.18.1",
     "randompasswordjs": "^1.0.3",
